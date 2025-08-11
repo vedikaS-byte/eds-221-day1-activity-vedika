@@ -1,4 +1,11 @@
-# STL_HEALTH_Lead
+---
+title: "STL_HEALTH_LEAD"
+author: "Vedika"
+format: pdf
+editor: visual
+---
+
+# STL_HEALTH_LEAD (Version 1)
 
 *ABSTRACT from GitHub repository:* "This repository contains a map image of census tracts in St. Louis, Missouri, colored by the estimated number of high blood lead tests over the 2010-2015 period. The repository also contains a variety of plots describing high lead exposure in St. Louis and two demographic correlates - race and poverty."
 
