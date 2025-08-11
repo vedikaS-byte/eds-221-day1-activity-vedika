@@ -1,0 +1,24 @@
+# STL_HEALTH_Lead
+*ABSTRACT from GitHub repository:* "This repository contains a map image of census tracts in St. Louis, Missouri, colored by the estimated number of high blood lead tests over the 2010-2015 period. The repository also contains a variety of plots describing high lead exposure in St. Louis and two demographic correlates - race and poverty." 
+
+Here, we will conduct data exploration and visualization with the stl_blood_lead.csv file. 
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+stl_lead <- read.csv(here::here("data", "stl_blood_lead.csv"))
+
+# view summary of dataset
+skimr::skim(stl_lead)
+
+
+
+```
+
+
+
+
+
+
+
