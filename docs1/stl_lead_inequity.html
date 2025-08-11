@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="stl_health_lead" class="level1">
 <h1>STL_HEALTH_Lead</h1>
-<p><em>ABSTRACT from GitHub repository:</em> “This repository contains a map image of census tracts in St.&nbsp;Louis, Missouri, colored by the estimated number of high blood lead tests over the 2010-2015 period. The repository also contains a variety of plots describing high lead exposure in St.&nbsp;Louis and two demographic correlates - race and poverty.”</p>
+<p><a href="https://github.com/slu-soc1120/STL_HEALTH_Lead"><em>ABSTRACT from GitHub repository</em></a><em>:</em> “This repository contains a map image of census tracts in St.&nbsp;Louis, Missouri, colored by the estimated number of high blood lead tests over the 2010-2015 period. The repository also contains a variety of plots describing high lead exposure in St.&nbsp;Louis and two demographic correlates - race and poverty.”</p>
 <p>Here, we will conduct data exploration and visualization with the stl_blood_lead.csv file.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -108,7 +108,7 @@ The following objects are masked from 'package:stats':
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>here() starts at /Users/vedikashirtekar/Documents/MEDS/EDS-212/eds-221-day1-activity-vedika</code></pre>
+<pre><code>here() starts at /Users/vedikashirtekar/Documents/MEDS/EDS-221/eds-221-day1-activity-vedika</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>stl_lead <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"stl_blood_lead.csv"</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>

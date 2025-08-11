@@ -1,6 +1,6 @@
 # STL_HEALTH_Lead
 
-*ABSTRACT from GitHub repository:* "This repository contains a map image of census tracts in St. Louis, Missouri, colored by the estimated number of high blood lead tests over the 2010-2015 period. The repository also contains a variety of plots describing high lead exposure in St. Louis and two demographic correlates - race and poverty."
+[*ABSTRACT from GitHub repository*](https://github.com/slu-soc1120/STL_HEALTH_Lead)*:* "This repository contains a map image of census tracts in St. Louis, Missouri, colored by the estimated number of high blood lead tests over the 2010-2015 period. The repository also contains a variety of plots describing high lead exposure in St. Louis and two demographic correlates - race and poverty."
 
 Here, we will conduct data exploration and visualization with the stl_blood_lead.csv file.
 
@@ -35,6 +35,7 @@ Now, we will use our new dataset stl_blood_lead to explore how demographics and 
 stl_blood_lead %>% ggplot(aes(x = pct_elevated, y = prop_white, col = pct_elevated)) + geom_point() + theme_bw() + labs(title = "Proportion of White Residents in Census Tracts Impacted by Elevated Blood Lead Levels", x = "Elevated Blood Lead Level", y = "Proportion of White Residents", caption = "*Color scaled by elevated blood lead level") + guides(color = F)
 
 ggsave(here::here("figs", "stl_scatter.png"))
+
 ```
 
 **The trend indicates a decrease in the proportion of white residents with higher blood lead levels. A higher proportion of white residents in measured census tracts have lower elevated blood lead levels compared to higher elevated blood lead levels. It is possible that fewer white residents are impacted by lead pollution compared to other demographics; however, this claim should be further investigated for accuracy.**
