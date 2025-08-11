@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -48,7 +82,695 @@ ul.task-list li input[type="checkbox"] {
 <section id="stl_health_lead" class="level1">
 <h1>STL_HEALTH_Lead</h1>
 <p><em>ABSTRACT from GitHub repository:</em> “This repository contains a map image of census tracts in St.&nbsp;Louis, Missouri, colored by the estimated number of high blood lead tests over the 2010-2015 period. The repository also contains a variety of plots describing high lead exposure in St.&nbsp;Louis and two demographic correlates - race and poverty.”</p>
-<p>Here, we will conduct data exploration and</p>
+<p>Here, we will conduct data exploration and visualization with the stl_blood_lead.csv file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'janitor'
+
+The following objects are masked from 'package:stats':
+
+    chisq.test, fisher.test</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at /Users/vedikashirtekar/Documents/MEDS/EDS-212/eds-221-day1-activity-vedika</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>stl_lead <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"stl_blood_lead.csv"</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># view summary of dataset</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(stl_lead)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">stl_lead</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">106</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">nameLSAD</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">geoID</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.951011e+10</td>
+<td style="text-align: right;">8132.85</td>
+<td style="text-align: right;">29510101100</td>
+<td style="text-align: right;">2.951011e+10</td>
+<td style="text-align: right;">2.951011e+10</td>
+<td style="text-align: right;">2.951012e+10</td>
+<td style="text-align: right;">2.951013e+10</td>
+<td style="text-align: left;">▇▇▆▃▆</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tractCE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.133859e+05</td>
+<td style="text-align: right;">8132.85</td>
+<td style="text-align: right;">101100</td>
+<td style="text-align: right;">1.064250e+05</td>
+<td style="text-align: right;">1.123500e+05</td>
+<td style="text-align: right;">1.191018e+05</td>
+<td style="text-align: right;">1.276000e+05</td>
+<td style="text-align: left;">▇▇▆▃▆</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">countTested</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7.373700e+02</td>
+<td style="text-align: right;">414.18</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">4.110000e+02</td>
+<td style="text-align: right;">6.940000e+02</td>
+<td style="text-align: right;">9.232500e+02</td>
+<td style="text-align: right;">2.116000e+03</td>
+<td style="text-align: left;">▆▇▅▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pctElevated</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.016000e+01</td>
+<td style="text-align: right;">6.01</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4.590000e+00</td>
+<td style="text-align: right;">9.480000e+00</td>
+<td style="text-align: right;">1.438000e+01</td>
+<td style="text-align: right;">2.328000e+01</td>
+<td style="text-align: left;">▇▇▇▅▃</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">totalPop</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.998580e+03</td>
+<td style="text-align: right;">1263.14</td>
+<td style="text-align: right;">620</td>
+<td style="text-align: right;">2.025000e+03</td>
+<td style="text-align: right;">2.911500e+03</td>
+<td style="text-align: right;">3.784500e+03</td>
+<td style="text-align: right;">7.069000e+03</td>
+<td style="text-align: left;">▅▇▆▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">totalPop_MOE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.533500e+02</td>
+<td style="text-align: right;">140.30</td>
+<td style="text-align: right;">94</td>
+<td style="text-align: right;">2.495000e+02</td>
+<td style="text-align: right;">3.335000e+02</td>
+<td style="text-align: right;">4.395000e+02</td>
+<td style="text-align: right;">8.320000e+02</td>
+<td style="text-align: left;">▅▇▃▂▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">white</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.371720e+03</td>
+<td style="text-align: right;">1293.40</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.850000e+01</td>
+<td style="text-align: right;">1.290000e+03</td>
+<td style="text-align: right;">2.168250e+03</td>
+<td style="text-align: right;">6.128000e+03</td>
+<td style="text-align: left;">▇▅▃▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">white_MOE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.013800e+02</td>
+<td style="text-align: right;">145.21</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6.050000e+01</td>
+<td style="text-align: right;">2.125000e+02</td>
+<td style="text-align: right;">2.997500e+02</td>
+<td style="text-align: right;">7.510000e+02</td>
+<td style="text-align: left;">▇▇▅▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">black</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.429870e+03</td>
+<td style="text-align: right;">1038.31</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">6.332500e+02</td>
+<td style="text-align: right;">1.334500e+03</td>
+<td style="text-align: right;">2.029000e+03</td>
+<td style="text-align: right;">4.572000e+03</td>
+<td style="text-align: left;">▇▆▃▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">black_MOE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.883800e+02</td>
+<td style="text-align: right;">148.84</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">1.832500e+02</td>
+<td style="text-align: right;">2.690000e+02</td>
+<td style="text-align: right;">3.792500e+02</td>
+<td style="text-align: right;">7.600000e+02</td>
+<td style="text-align: left;">▆▇▆▂▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">povertyTot</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7.869400e+02</td>
+<td style="text-align: right;">528.61</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">4.085000e+02</td>
+<td style="text-align: right;">6.515000e+02</td>
+<td style="text-align: right;">9.557500e+02</td>
+<td style="text-align: right;">2.801000e+03</td>
+<td style="text-align: left;">▇▅▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">povertyTot_MOE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.705000e+02</td>
+<td style="text-align: right;">156.11</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">1.602500e+02</td>
+<td style="text-align: right;">2.415000e+02</td>
+<td style="text-align: right;">3.375000e+02</td>
+<td style="text-align: right;">1.049000e+03</td>
+<td style="text-align: left;">▇▅▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">povertyU18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.497500e+02</td>
+<td style="text-align: right;">262.60</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6.650000e+01</td>
+<td style="text-align: right;">1.735000e+02</td>
+<td style="text-align: right;">3.417500e+02</td>
+<td style="text-align: right;">1.320000e+03</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">povertyU18_MOE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.400800e+02</td>
+<td style="text-align: right;">107.48</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">6.125000e+01</td>
+<td style="text-align: right;">1.205000e+02</td>
+<td style="text-align: right;">1.947500e+02</td>
+<td style="text-align: right;">5.950000e+02</td>
+<td style="text-align: left;">▇▆▂▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now, we will look at some basic data visualization and cleaning on this dataset using skimr and ggplot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>stl_lead <span class="ot">&lt;-</span> stl_lead <span class="sc">%&gt;%</span> <span class="fu">clean_names</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(stl_lead)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "geo_id"          "tract_ce"        "name_lsad"       "count_tested"   
+ [5] "pct_elevated"    "total_pop"       "total_pop_moe"   "white"          
+ [9] "white_moe"       "black"           "black_moe"       "poverty_tot"    
+[13] "poverty_tot_moe" "poverty_u18"     "poverty_u18_moe"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now that the column names are cleaned up, let's visualize the distributions and summary of each column </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(stl_lead)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">stl_lead</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">106</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">name_lsad</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">geo_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.951011e+10</td>
+<td style="text-align: right;">8132.85</td>
+<td style="text-align: right;">29510101100</td>
+<td style="text-align: right;">2.951011e+10</td>
+<td style="text-align: right;">2.951011e+10</td>
+<td style="text-align: right;">2.951012e+10</td>
+<td style="text-align: right;">2.951013e+10</td>
+<td style="text-align: left;">▇▇▆▃▆</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tract_ce</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.133859e+05</td>
+<td style="text-align: right;">8132.85</td>
+<td style="text-align: right;">101100</td>
+<td style="text-align: right;">1.064250e+05</td>
+<td style="text-align: right;">1.123500e+05</td>
+<td style="text-align: right;">1.191018e+05</td>
+<td style="text-align: right;">1.276000e+05</td>
+<td style="text-align: left;">▇▇▆▃▆</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">count_tested</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7.373700e+02</td>
+<td style="text-align: right;">414.18</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">4.110000e+02</td>
+<td style="text-align: right;">6.940000e+02</td>
+<td style="text-align: right;">9.232500e+02</td>
+<td style="text-align: right;">2.116000e+03</td>
+<td style="text-align: left;">▆▇▅▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pct_elevated</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.016000e+01</td>
+<td style="text-align: right;">6.01</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4.590000e+00</td>
+<td style="text-align: right;">9.480000e+00</td>
+<td style="text-align: right;">1.438000e+01</td>
+<td style="text-align: right;">2.328000e+01</td>
+<td style="text-align: left;">▇▇▇▅▃</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">total_pop</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.998580e+03</td>
+<td style="text-align: right;">1263.14</td>
+<td style="text-align: right;">620</td>
+<td style="text-align: right;">2.025000e+03</td>
+<td style="text-align: right;">2.911500e+03</td>
+<td style="text-align: right;">3.784500e+03</td>
+<td style="text-align: right;">7.069000e+03</td>
+<td style="text-align: left;">▅▇▆▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">total_pop_moe</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.533500e+02</td>
+<td style="text-align: right;">140.30</td>
+<td style="text-align: right;">94</td>
+<td style="text-align: right;">2.495000e+02</td>
+<td style="text-align: right;">3.335000e+02</td>
+<td style="text-align: right;">4.395000e+02</td>
+<td style="text-align: right;">8.320000e+02</td>
+<td style="text-align: left;">▅▇▃▂▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">white</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.371720e+03</td>
+<td style="text-align: right;">1293.40</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.850000e+01</td>
+<td style="text-align: right;">1.290000e+03</td>
+<td style="text-align: right;">2.168250e+03</td>
+<td style="text-align: right;">6.128000e+03</td>
+<td style="text-align: left;">▇▅▃▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">white_moe</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.013800e+02</td>
+<td style="text-align: right;">145.21</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6.050000e+01</td>
+<td style="text-align: right;">2.125000e+02</td>
+<td style="text-align: right;">2.997500e+02</td>
+<td style="text-align: right;">7.510000e+02</td>
+<td style="text-align: left;">▇▇▅▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">black</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.429870e+03</td>
+<td style="text-align: right;">1038.31</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">6.332500e+02</td>
+<td style="text-align: right;">1.334500e+03</td>
+<td style="text-align: right;">2.029000e+03</td>
+<td style="text-align: right;">4.572000e+03</td>
+<td style="text-align: left;">▇▆▃▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">black_moe</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.883800e+02</td>
+<td style="text-align: right;">148.84</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">1.832500e+02</td>
+<td style="text-align: right;">2.690000e+02</td>
+<td style="text-align: right;">3.792500e+02</td>
+<td style="text-align: right;">7.600000e+02</td>
+<td style="text-align: left;">▆▇▆▂▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">poverty_tot</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7.869400e+02</td>
+<td style="text-align: right;">528.61</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">4.085000e+02</td>
+<td style="text-align: right;">6.515000e+02</td>
+<td style="text-align: right;">9.557500e+02</td>
+<td style="text-align: right;">2.801000e+03</td>
+<td style="text-align: left;">▇▅▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">poverty_tot_moe</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.705000e+02</td>
+<td style="text-align: right;">156.11</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">1.602500e+02</td>
+<td style="text-align: right;">2.415000e+02</td>
+<td style="text-align: right;">3.375000e+02</td>
+<td style="text-align: right;">1.049000e+03</td>
+<td style="text-align: left;">▇▅▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">poverty_u18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.497500e+02</td>
+<td style="text-align: right;">262.60</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6.650000e+01</td>
+<td style="text-align: right;">1.735000e+02</td>
+<td style="text-align: right;">3.417500e+02</td>
+<td style="text-align: right;">1.320000e+03</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">poverty_u18_moe</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.400800e+02</td>
+<td style="text-align: right;">107.48</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">6.125000e+01</td>
+<td style="text-align: right;">1.205000e+02</td>
+<td style="text-align: right;">1.947500e+02</td>
+<td style="text-align: right;">5.950000e+02</td>
+<td style="text-align: left;">▇▆▂▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now, add a column called prop_white that returns the percent of each census tract identifying as white (variable white in the dataset divided by variable totalPop, times 100)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>stl_blood_lead <span class="ot">&lt;-</span> stl_lead <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">prop_white =</span> (white<span class="sc">/</span>total_pop)<span class="sc">*</span><span class="dv">100</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(stl_blood_lead)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   106 obs. of  16 variables:
+ $ geo_id         : num  2.95e+10 2.95e+10 2.95e+10 2.95e+10 2.95e+10 ...
+ $ tract_ce       : int  118100 117400 126700 119102 126800 126900 108100 127000 127400 103700 ...
+ $ name_lsad      : chr  "Census Tract 1181" "Census Tract 1174" "Census Tract 1267" "Census Tract 1191.02" ...
+ $ count_tested   : int  345 871 458 182 486 1296 903 585 2116 417 ...
+ $ pct_elevated   : num  9.57 12.06 18.12 2.2 4.73 ...
+ $ total_pop      : int  1161 4307 1089 3237 3490 4590 3144 2052 5486 2408 ...
+ $ total_pop_moe  : int  192 447 199 309 231 826 464 273 516 274 ...
+ $ white          : int  414 2604 432 2008 3026 148 108 304 1777 2149 ...
+ $ white_moe      : int  100 303 116 262 270 217 111 82 391 212 ...
+ $ black          : int  724 1338 631 646 194 4320 3020 1739 3603 156 ...
+ $ black_moe      : int  179 374 187 210 98 760 442 283 621 190 ...
+ $ poverty_tot    : int  324 615 506 958 349 1743 652 331 2524 254 ...
+ $ poverty_tot_moe: int  140 255 164 234 129 825 305 156 598 88 ...
+ $ poverty_u18    : int  109 169 98 15 35 627 256 47 1110 15 ...
+ $ poverty_u18_moe: int  105 156 60 25 47 595 136 79 318 23 ...
+ $ prop_white     : num  35.7 60.5 39.7 62 86.7 ...</code></pre>
+</div>
+</div>
+<p>Now, we will use our new dataset stl_blood_lead to explore how demographics and elevated blood lead levels are related via a scatterplot and histogram.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># scatterplot</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>stl_blood_lead <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pct_elevated, <span class="at">y =</span> prop_white, <span class="at">col =</span> pct_elevated)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of White Residents in Census Tracts Impacted by Elevated Blood Lead Levels"</span>, <span class="at">x =</span> <span class="st">"Elevated Blood Lead Level"</span>, <span class="at">y =</span> <span class="st">"Proportion of White Residents"</span>, <span class="at">caption =</span> <span class="st">"*Color scaled by elevated blood lead level"</span>) <span class="sc">+</span> <span class="fu">guides</span>(<span class="at">color =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `&lt;scale&gt;` argument of `guides()` cannot be `FALSE`. Use "none" instead as
+of ggplot2 3.3.4.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="stl_lead_inequity_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"figs"</span>, <span class="st">"stl_scatter.png"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+</div>
+<p><strong>The trend indicates a decrease in the proportion of white residents with higher blood lead levels. A higher proportion of white residents in measured census tracts have lower elevated blood lead levels compared to higher elevated blood lead levels. It is possible that fewer white residents are impacted by lead pollution compared to other demographics; however, this claim should be further investigated for accuracy.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>stl_blood_lead <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pct_elevated)) <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="at">col =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Elevated Blood Lead Levels"</span>, <span class="at">x =</span> <span class="st">"Elevated Blood Lead Level"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="stl_lead_inequity_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"figs"</span>, <span class="st">"stl_hist.jpg"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Saving 7 x 5 in image
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+</div>
 </section>
 
 </main>

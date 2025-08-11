@@ -11,11 +11,36 @@ stl_lead <- read.csv(here::here("data", "stl_blood_lead.csv"))
 
 # view summary of dataset
 skimr::skim(stl_lead)
-
-
-
 ```
 
+Now, we will look at some basic data visualization and cleaning on this dataset using skimr and ggplot. 
+
+```{r}
+stl_lead <- stl_lead %>% clean_names()
+names(stl_lead)
+
+# now that the column names are cleaned up, let's visualize the distributions and summary of each column 
+skimr::skim(stl_lead)
+
+# now, add a column called prop_white that returns the percent of each census tract identifying as white (variable white in the dataset divided by variable totalPop, times 100)
+stl_blood_lead <- stl_lead %>% mutate(prop_white = (white/total_pop)*100)
+str(stl_blood_lead)
+```
+
+Now, we will use our new dataset stl_blood_lead to explore how demographics and elevated blood lead levels are related via a scatterplot and histogram. 
+
+```{r}
+# scatterplot
+stl_blood_lead %>% ggplot(aes(x = pct_elevated, y = prop_white, col = pct_elevated)) + geom_point() + theme_bw() + labs(title = "Proportion of White Residents in Census Tracts Impacted by Elevated Blood Lead Levels", x = "Elevated Blood Lead Level", y = "Proportion of White Residents", caption = "*Color scaled by elevated blood lead level") + guides(color = F)
+
+ggsave(here::here("figs", "stl_scatter.png"))
+```
+**The trend indicates a decrease in the proportion of white residents with higher blood lead levels. A higher proportion of white residents in measured census tracts have lower elevated blood lead levels compared to higher elevated blood lead levels. It is possible that fewer white residents are impacted by lead pollution compared to other demographics; however, this claim should be further investigated for accuracy.** 
+```{r}
+stl_blood_lead %>% ggplot(aes(x = pct_elevated)) + geom_histogram(col = "black", fill = "darkblue") + theme_bw() +  labs(title = "Elevated Blood Lead Levels", x = "Elevated Blood Lead Level") 
+
+ggsave(here::here("figs", "stl_hist.jpg"))
+```
 
 
 
